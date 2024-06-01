@@ -1,60 +1,57 @@
 #include <stdio.h>
 
-typedef struct{
-    
-    int name;
+struct Process{
+    int pid;
     int arrival;
     int burst;
     int completion;
-    int turnAround;
-    int waiting;
-    
-}Process;
+    int tat;
+    int wt;
+};
 
-void swapTime(Process processess[],int n){
-    
-    int currentTime = 0,min;
-    
-    for(int i =0 ; i < n - 1; i++){
-        min = i;
-        for(int j=i+1;j<n;j++)
-            if(processess[j].burst < processess[min].burst && processess[j].arrival <= currentTime)
-                min = j;
-                
-        if(min != i){
-                currentTime += processess[min].burst;
-                processess[min].completion = currentTime;
-                Process temp = processess[min];
-                processess[min] = processess[i];
-                processess[i] = temp;
-        }
-        else{
-            currentTime += processess[min].burst;
-            processess[min].completion = currentTime;
-        }
-    }
-    
-        currentTime += processess[n-1].burst;
-        processess[n-1].completion = currentTime;
-    
-}
-
-void calculateTime(Process processess[],int n,float *avgTAT,float *avgWt){
+void sort(struct Process processes[],int n){
+    int current = processes[0].arrival;
     
     for(int i=0;i<n;i++){
-        
-        processess[i].turnAround = processess[i].completion - processess[i].arrival;
-        *avgTAT += processess[i].turnAround;
-        processess[i].waiting = processess[i].turnAround - processess[i].burst;
-        *avgWt += processess[i].waiting;
-        
+        int min = i;
+        for(int j=i+1;j<n;j++){
+            if(processes[j].burst < processes[min].burst && processes[j].arrival <= current){
+                min = j;
+            }
+        }
+        if(min != i){
+            struct Process temp = processes[min];
+            processes[min] = processes[i];
+            processes[i] = temp;
+        }
+        current += processes[i].burst;
+        processes[i].completion = current;
     }
 }
 
+void calculateTimes(struct Process processes[], int n) {
+    int current = processes[0].arrival;
+    for (int i = 0; i < n; i++) {
+        current =+ processes[i].burst;
+        processes[i].tat = processes[i].completion - processes[i].arrival;
+        processes[i].wt = processes[i].tat - processes[i].burst;
+    }
+    
+    float avgwt=0.0;
+    float avgtat=0.0;
+    printf("Process  ArrivalTime  BurstTime Completion TurnaroundTime   WaitingTime\n");
+       for(int i=0;i<n;i++)
+       {
+           printf("P%d%10d%10d%15d%15d%20d\n",processes[i].pid,processes[i].arrival,processes[i].burst,processes[i].completion,processes[i].tat,processes[i].wt);
+           avgwt=avgwt+processes[i].wt;
+           avgtat=avgtat+processes[i].tat;
+       }
+    printf("Average Waiting Time=%f\n",avgwt/n);
+    printf("Average turnaround Time=%f\n",avgtat/n);
+}
 
 int main(){
-    
-    Process processess[] = {
+    struct Process processes[] = {
         {1, 0, 8},
         {2, 1, 1},
         {3, 2, 3},
@@ -62,20 +59,8 @@ int main(){
         {5, 4, 6}
     };
     
-    int n = sizeof(processess) / sizeof(Process);
-    float avgWt = 0.0,avgTAT = 0.0;
+    int n = sizeof(processes)/sizeof(struct Process);
     
-    swapTime(processess,n);
-    calculateTime(processess,n,&avgTAT,&avgWt);
-    
-    printf("Process  ArrivalTime BurstTime TurnaroundTime    WaitingTime  completion\n");
-    
-    for(int i=0;i<n;i++)
-   {
-       printf("P%d%10d%10d%15d%20d%15d\n",processess[i].name,processess[i].arrival,processess[i].burst,processess[i].turnAround,processess[i].waiting,processess[i].completion);
-       
-   }
-    printf("Average Waiting Time=%f\n",avgWt/n);
-    printf("Average turnaround Time=%f\n",avgTAT/n);
-    
+    sort(processes,n);
+    calculateTimes(processes,n);
 }
