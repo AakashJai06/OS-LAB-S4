@@ -17,7 +17,7 @@ int main(){
         return 1;
     }
     
-    while(dptr == readdir(dirp)){
+    while(dptr = readdir(dirp)){
         printf("%s\n", dptr->d_name);
     }
     closedir(dirp);
