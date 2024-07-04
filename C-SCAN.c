@@ -52,11 +52,8 @@ int main(){
             thm += abs(initial-rq[i]);
             initial = rq[i];
         }
-        printf("%d\n",thm);
         thm += abs(rq[i+1]-0);
-        printf("%d\n",thm);
         thm  += size-1;
-        printf("%d\n",thm);
         initial = size-1;
         for(i= n-1;i>=index;i--){
             thm += abs(initial - rq[i]);
