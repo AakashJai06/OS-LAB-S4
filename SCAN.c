@@ -39,7 +39,7 @@ int main(){
             thm += abs(initial-rq[i]);
             initial = rq[i];
         }
-        thm += abs(rq[i-1]-size-1);
+        thm += abs(size-rq[i-1]-1);
         initial = size-1;
         for( i= index-1;i>=0;i--){
             thm += abs(rq[i]-initial);
