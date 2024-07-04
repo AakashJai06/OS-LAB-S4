@@ -1,83 +1,117 @@
+//Memmory Allocation Algorithm
 #include <stdio.h>
 
-void firstFit(int b[],int p[],int m,int n){
-    printf("Process No  Process Size  Block no\n");
-    for(int i=0;i<n;i++){
-        int flag =0;
-        for(int j=0;j<m;j++){
-            if(b[j] > p[i]){
+void firstFit(int b[],int p[],int bn,int pn){
+    printf("Process No.  Process Size  Block no.\n");
+    for(int i=0;i<pn;i++){
+        int flag=0;
+        for(int j=0;j<bn;j++){
+            if(p[i] < b[j]){
                 b[j] -= p[i];
-                flag = 1;
-                printf("%d%15d%15d\n",i+1,p[i],j+1);
+                printf("P%d%15d%15d\n",(i+1),p[i],j+1);
+                flag=1;
                 break;
             }
         }
-        if(!flag){
-            printf("%d%15d            Not Allocated\n",i+1,p[i]);
-        }
+        if(!flag)
+            printf("P%d%15d\t\tNot Allocated\n",(i+1),p[i]);
     }
 }
 
-void worstFit(int b[],int p[],int m,int n){
-    printf("Process No  Process Size  Block no\n");
-    for(int i=0;i<n;i++){
-        int flag =0,max = i;
-        for(int j=i+1;j<m;j++){
-            if(b[max] < b[j]){
-                max  = j;
+void bestFit(int b[],int p[],int bn,int pn){
+    int bno[20],temp,temp1;
+    for(int i=0;i<bn;i++)
+        bno[i] = i;
+    printf("Process No.  Process Size  Block no.\n");
+    for(int i=0;i<bn;i++){
+        for(int j=0;j<bn-i-1;j++){
+            if(b[j] > b[j+1]){
+                temp1 = bno[j];
+                bno[j] = bno[j+1];
+                bno[j+1] = temp1;
+                temp = b[j];
+                b[j] = b[j+1];
+                b[j+1] = temp;
             }
         }
-        if(b[max]>p[i]){
-            b[max] -=p[i];
-            printf("%d%15d%15d\n",i+1,p[i],max+1);
-            flag = 1;
-        }
-        if(!flag){
-            printf("%d%15d            Not Allocated\n",i+1,p[i]);
-        }
     }
+    
+    for(int i=0;i<pn;i++){
+        int flag=0;
+        for(int j=0;j<bn;j++){
+            if(p[i] < b[j]){
+                b[j] -= p[i];
+                printf("P%d%15d%15d\n",(i+1),p[i],(bno[j]+1));
+                flag=1;
+                break;
+            }
+        }
+        if(!flag)
+            printf("P%d%15d\t\tNot Allocated\n",(i+1),p[i]);
+    }
+    
 }
 
-void bestFit(int b[],int p[],int m,int n){
-    printf("Process No  Process Size  Block no\n");
-    for(int i=0;i<n;i++){
-        int min=-1;
-        for(int j=0;j<m;j++){
-            if(b[j] > p[i]){
-                if(min == -1 || b[j] < b[min]){
-                    min  = j;
-                }
+void worstFit(int b[],int p[],int bn,int pn){
+    int bno[20],temp,temp1;
+    for(int i=0;i<bn;i++)
+        bno[i] = i;
+    printf("Process No.  Process Size  Block no.\n");
+    for(int i=0;i<bn;i++){
+        for(int j=0;j<bn-i-1;j++){
+            if(b[j] < b[j+1]){
+                temp1 = bno[j];
+                bno[j] = bno[j+1];
+                bno[j+1] = temp1;
+                temp = b[j];
+                b[j] = b[j+1];
+                b[j+1] = temp;
             }
         }
-        if(min != -1){
-            b[min] -=p[i];
-            printf("%d%15d%15d\n",i+1,p[i],min+1);
-        }
-        else{
-            printf("%d%15d            Not Allocated\n",i+1,p[i]);
-        }
     }
+    
+    for(int i=0;i<pn;i++){
+        int flag=0;
+        for(int j=0;j<bn;j++){
+            if(p[i] < b[j]){
+                b[j] -= p[i];
+                printf("P%d%15d%15d\n",(i+1),p[i],(bno[j]+1));
+                flag=1;
+                break;
+            }
+        }
+        if(!flag)
+            printf("P%d%15d\t\tNot Allocated\n",(i+1),p[i]);
+    }
+    
 }
 
 int main(){
     
-    int blockSize[] = {100, 500, 200, 300, 600};
-    int processSize[] = {212, 417, 112, 426};
-    int m = sizeof(blockSize) / sizeof(blockSize[0]);
-    int n = sizeof(processSize) / sizeof(processSize[0]),ch;
+    int b[20],p[20],bn,pn,ch;
+    printf("Number of Blocks-->");
+    scanf("%d",&bn);
+    printf("Block sizes-->");
+    for(int i=0;i<bn;i++)
+    scanf("%d",&b[i]);
+    printf("Number of processes-->");
+    scanf("%d",&pn);
+    printf("Process size-->");
+    for(int i=0;i<pn;i++)
+    scanf("%d",&p[i]);
     
-    printf("1) First Fit\n2) Worst Fit\n3) Best Fit\nChoice:  ");
-    scanf("%d",&ch);    
-    
-    switch(ch){
-        case 1: 
-                firstFit(blockSize,processSize,m,n);
+        printf("Enter Choice:\n\t1) First Fit\n\t2) Best Fit\n\t3) Worst Fit\n\t4) Exit\n\t");
+    scanf("%d",&ch);
+        switch(ch){
+        case 1:
+                firstFit(b,p,bn,pn);
                 break;
         case 2:
-                worstFit(blockSize,processSize,m,n);
+                bestFit(b,p,bn,pn);
                 break;
         case 3:
-                bestFit(blockSize,processSize,m,n);
+                worstFit(b,p,bn,pn);
                 break;
     }
+    return 0;
 }
