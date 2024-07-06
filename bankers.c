@@ -40,8 +40,8 @@ int main(){
         for(j=0;j<m;j++)
             need[i][j] = max[i][j] - alloc[i][j];
     }
-    
-    for(i =0;i<n;i++){
+    int complete =0;
+    while(complete<n){
         for(int j=0;j<n;j++){
             if(f[j] == 0){
                 int flag = 0;
@@ -57,6 +57,7 @@ int main(){
                     }
                     f[j] = 1;
                     seq[y++] = j;
+                    complete++;
                 }
             }
         }
@@ -102,7 +103,9 @@ int main(){
                 alloc[n1-1][i] += req[i];
         }
         
-        for(i =0;i<n;i++){
+        complete =0;
+        
+        while(complete<0){
         for(int j=0;j<n;j++){
             if(f[j] == 0){
                 flag = 0;
@@ -118,6 +121,7 @@ int main(){
                     }
                     f[j] = 1;
                     seq[y1++] = j;
+                    complete++;
                 }
             }
         }
