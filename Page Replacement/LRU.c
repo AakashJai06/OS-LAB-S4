@@ -36,7 +36,7 @@ for(int i=0;i<n;i++){
             }
             else{
                 int min =0;
-                for(int k=0;k<fn;k++){
+                for(int k=1;k<fn;k++){
                     if(current[min] > current[k])  min =k;
                 }
                 f[min] = m[i];
